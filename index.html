@@ -20,6 +20,8 @@
             color: #555;
             max-width: 800px;
             font-style: italic; /* Κείμενο σε italics */
+            font-weight: bold; /* Κείμενο σε bold */
+            font-family: "Comic Sans MS", cursive, sans-serif; /* Γραμματοσειρά Comic Sans */
         }
         #map {
             width: 100%;
@@ -58,6 +60,15 @@
             border-radius: 10px;
             width: 22%;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .question-box::before {
+            content: attr(data-player-name);
+            display: block;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #8B0000;
         }
         .choices {
             margin-top: 10px;
@@ -107,27 +118,27 @@
         <div class="label" style="top: 72%; left: 34%;">Σπάρτη<br>(Λύσανδρος)</div>
 
         <!-- Κόρινθος -->
-        <div class="location" data-location="Corinth" style="top: 55%; left: 45%;"></div>
-        <div class="label" style="top: 57%; left: 47%;">Κόρινθος<br>(Ξενοφών)</div>
+        <div class="location" data-location="Corinth" style="top: 67%; left: 37%;"></div>
+        <div class="label" style="top: 69%; left: 39%;">Κόρινθος<br>(Ξενοφών)</div>
 
         <!-- Σικελία -->
-        <div class="location" data-location="Sicily" style="top: 65%; left: 0%;"></div>
-        <div class="label" style="top: 67%; left: 2%;">Σικελία<br>(Αλκιβιάδης)</div>
+        <div class="location" data-location="Sicily" style="top: 65%; left: 5%;"></div>
+        <div class="label" style="top: 67%; left: 7%;">Σικελία<br>(Αλκιβιάδης)</div>
     </div>
     <div class="question-container">
-        <div class="question-box" id="question-box-1">
+        <div class="question-box" id="question-box-1" data-player-name="Περικλής">
             <p id="question-1"></p>
             <div class="choices" id="choices-1"></div>
         </div>
-        <div class="question-box" id="question-box-2">
+        <div class="question-box" id="question-box-2" data-player-name="Λύσανδρος">
             <p id="question-2"></p>
             <div class="choices" id="choices-2"></div>
         </div>
-        <div class="question-box" id="question-box-3">
+        <div class="question-box" id="question-box-3" data-player-name="Ξενοφών">
             <p id="question-3"></p>
             <div class="choices" id="choices-3"></div>
         </div>
-        <div class="question-box" id="question-box-4">
+        <div class="question-box" id="question-box-4" data-player-name="Αλκιβιάδης">
             <p id="question-4"></p>
             <div class="choices" id="choices-4"></div>
         </div>
