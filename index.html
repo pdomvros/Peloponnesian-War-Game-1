@@ -78,16 +78,16 @@
     <h1>Η Μάχη των Στρατηγών</h1>
     <div id="map">
         <!-- Αθήνα -->
-        <div class="location" data-location="Athens" style="top: 40%; left: 45%;"></div>
-        <div class="label" style="top: 42%; left: 47%;">Αθήνα<br>(Περικλής)</div>
+        <div class="location" data-location="Athens" style="top: 40%; left: 55%;"></div>
+        <div class="label" style="top: 42%; left: 57%;">Αθήνα<br>(Περικλής)</div>
 
         <!-- Σπάρτη -->
-        <div class="location" data-location="Sparta" style="top: 75%; left: 40%;"></div>
-        <div class="label" style="top: 77%; left: 42%;">Σπάρτη<br>(Λύσανδρος)</div>
+        <div class="location" data-location="Sparta" style="top: 75%; left: 50%;"></div>
+        <div class="label" style="top: 77%; left: 52%;">Σπάρτη<br>(Λύσανδρος)</div>
 
         <!-- Κόρινθος -->
-        <div class="location" data-location="Corinth" style="top: 60%; left: 38%;"></div>
-        <div class="label" style="top: 62%; left: 40%;">Κόρινθος<br>(Ξενοφών)</div>
+        <div class="location" data-location="Corinth" style="top: 60%; left: 48%;"></div>
+        <div class="label" style="top: 62%; left: 50%;">Κόρινθος<br>(Ξενοφών)</div>
 
         <!-- Σικελία -->
         <div class="location" data-location="Sicily" style="top: 35%; left: 10%;"></div>
@@ -114,6 +114,8 @@
             ];
             let currentPlayerIndex = 0;
             let scores = [0, 0, 0, 0];
+            let currentRiddleIndex = 0;
+            let currentLocationKey = null;
 
             const locations = {
                 "Athens": {
@@ -160,47 +162,42 @@
 
             document.querySelectorAll(".location").forEach(location => {
                 location.addEventListener("click", function() {
-                    let locationKey = this.getAttribute("data-location");
-                    if (locations[locationKey]) {
-                        showRiddles(locationKey);
+                    currentLocationKey = this.getAttribute("data-location");
+                    if (locations[currentLocationKey]) {
+                        currentRiddleIndex = 0;
+                        showNextRiddle();
                     }
                 });
             });
 
-            function showRiddles(location) {
-                const data = locations[location];
-                let currentRiddleIndex = 0;
-
-                function displayNextRiddle() {
-                    if (currentRiddleIndex < data.riddles.length) {
-                        const riddle = data.riddles[currentRiddleIndex];
-                        questionBox.innerHTML = `<p>${riddle.question}</p>`;
-                        choices.innerHTML = "";
-                        riddle.options.forEach(option => {
-                            const button = document.createElement("button");
-                            button.textContent = option;
-                            button.onclick = () => checkAnswer(option, riddle.answer, location, currentRiddleIndex);
-                            choices.appendChild(button);
-                        });
-                        currentRiddleIndex++;
-                    } else {
-                        alert(`Τέλος των γρίφων για την ${location}. Σκορ Παίκτη ${currentPlayerIndex + 1}: ${scores[currentPlayerIndex]}`);
-                        currentPlayerIndex = (currentPlayerIndex + 1) % 4; // Εναλλαγή στον επόμενο παίκτη
-                        updateScores();
-                    }
+            function showNextRiddle() {
+                const data = locations[currentLocationKey];
+                if (currentRiddleIndex < data.riddles.length) {
+                    const riddle = data.riddles[currentRiddleIndex];
+                    questionBox.innerHTML = `<p>${riddle.question}</p>`;
+                    choices.innerHTML = "";
+                    riddle.options.forEach(option => {
+                        const button = document.createElement("button");
+                        button.textContent = option;
+                        button.onclick = () => checkAnswer(option, riddle.answer);
+                        choices.appendChild(button);
+                    });
+                } else {
+                    alert(`Τέλος των γρίφων για την ${currentLocationKey}. Σκορ Παίκτη ${currentPlayerIndex + 1}: ${scores[currentPlayerIndex]}`);
+                    currentPlayerIndex = (currentPlayerIndex + 1) % 4; // Εναλλαγή στον επόμενο παίκτη
+                    updateScores();
                 }
-
-                displayNextRiddle();
             }
 
-            function checkAnswer(selected, correct, location, riddleIndex) {
+            function checkAnswer(selected, correct) {
                 if (selected === correct) {
                     alert("Σωστό!");
                     scores[currentPlayerIndex]++;
                 } else {
                     alert("Λάθος!");
                 }
-                showRiddles(location); // Εμφάνιση του επόμενου γρίφου
+                currentRiddleIndex++;
+                showNextRiddle(); // Αυτόματη μετάβαση στην επόμενη ερώτηση
             }
 
             function updateScores() {
