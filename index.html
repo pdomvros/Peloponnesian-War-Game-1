@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Η Μάχη των Στρατηγών</title>
     <style>
+        /* Κύριο CSS */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -19,9 +20,9 @@
             font-size: 1.1em;
             color: #555;
             max-width: 800px;
-            font-style: italic; /* Κείμενο σε italics */
-            font-weight: bold; /* Κείμενο σε bold */
-            font-family: "Comic Sans MS", cursive, sans-serif; /* Γραμματοσειρά Comic Sans */
+            font-style: italic;
+            font-weight: bold;
+            font-family: "Comic Sans MS", cursive, sans-serif;
         }
         #map {
             width: 100%;
@@ -32,7 +33,7 @@
             margin: 20px auto;
             border: 5px solid #8B0000;
             border-radius: 10px;
-            background-color: #ffcccb; /* Έντονο background χρώμα */
+            background-color: #ffcccb;
         }
         .location {
             position: absolute;
@@ -181,6 +182,7 @@
             let currentLocationKey = [null, null, null, null];
 
             const failSound = new Audio('fail-sound.mp3'); // Ηχητικό εφέ για λάθος απάντηση
+            const successSound = new Audio('success-sound3.mp3'); // Ηχητικό εφέ για νίκη
 
             const locations = {
                 "Athens": {
@@ -248,7 +250,7 @@
                         choices[playerIndex].appendChild(button);
                     });
                 } else {
-                    alert(`Τέλος των γρίφων για την ${currentLocationKey[playerIndex]}. Η αποικία της Πυλαίας ανήκει στον ${data.name}! 🎉`);
+                    showVictoryMessage(data.name);
                     updateScores();
                 }
             }
@@ -269,6 +271,47 @@
                 playerScores.forEach((scoreElement, index) => {
                     scoreElement.textContent = `Παίκτης ${index + 1}: ${scores[index]}`;
                 });
+            }
+
+            function showVictoryMessage(winnerName) {
+                // Ανοίγουμε νέο tab με το νικητήριο μήνυμα
+                const victoryWindow = window.open("", "Victory", "width=600,height=400");
+                victoryWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>Νίκη!</title>
+                        <style>
+                            body {
+                                background-image: url('victory2.png');
+                                background-size: cover;
+                                background-position: center;
+                                font-family: 'Comic Sans MS', cursive, sans-serif;
+                                text-align: center;
+                                color: #FFD700;
+                                padding: 50px;
+                            }
+                            h1 {
+                                font-size: 3em;
+                                text-shadow: 2px 2px 4px #000;
+                            }
+                            p {
+                                font-size: 2em;
+                                text-shadow: 2px 2px 4px #000;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>🎉 Νίκη! 🎉</h1>
+                        <p>Ο ${winnerName} κατέκτησε την αποικία της Πυλαίας! 🏆</p>
+                        <p>🎊🎊 Συγχαρητήρια! 🎊🎊</p>
+                        <p>🎶🎵 Η μουσική της νίκης παίζει! 🎵🎶</p>
+                    </body>
+                    </html>
+                `);
+                victoryWindow.document.close();
+
+                // Παίζουμε το ηχητικό εφέ της νίκης
+                successSound.play();
             }
         });
     </script>
