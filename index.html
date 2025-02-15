@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Η Μάχη των Στρατηγών</title>
     <style>
-        /* Κύριο CSS */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -257,14 +256,14 @@
 
             function checkAnswer(selected, correct, playerIndex) {
                 if (selected === correct) {
-                    alert("Σωστό! 🎉");
-                    scores[playerIndex]++;
+                    scores[playerIndex]++; // Αυξάνουμε το σκορ
+                    currentRiddleIndex[playerIndex]++; // Προχωράμε στον επόμενο γρίφο
+                    showNextRiddle(playerIndex); // Εμφανίζουμε την επόμενη ερώτηση
                 } else {
-                    alert("Λάθος! ❌");
-                    failSound.play(); // Ηχητικό εφέ για λάθος απάντηση
+                    alert("Λάθος! ❌"); // Εμφανίζουμε μήνυμα λάθους
+                    failSound.play(); // Παίζουμε τον ήχο λάθους
                 }
-                currentRiddleIndex[playerIndex]++;
-                showNextRiddle(playerIndex); // Αυτόματη μετάβαση στην επόμενη ερώτηση
+                updateScores(); // Ενημερώνουμε τα σκορ
             }
 
             function updateScores() {
@@ -274,7 +273,6 @@
             }
 
             function showVictoryMessage(winnerName) {
-                // Ανοίγουμε νέο tab με το νικητήριο μήνυμα
                 const victoryWindow = window.open("", "Victory", "width=600,height=400");
                 victoryWindow.document.write(`
                     <html>
@@ -304,14 +302,12 @@
                         <h1>🎉 Νίκη! 🎉</h1>
                         <p>Ο ${winnerName} κατέκτησε την αποικία της Πυλαίας! 🏆</p>
                         <p>🎊🎊 Συγχαρητήρια! 🎊🎊</p>
-                        <p>🎶🎵 Είσαι ο μεγάλος νικητής!🎵🎶</p>
+                        <p>🎶🎵 Η μουσική της νίκης παίζει! 🎵🎶</p>
                     </body>
                     </html>
                 `);
                 victoryWindow.document.close();
-
-                // Παίζουμε το ηχητικό εφέ της νίκης
-                successSound.play();
+                successSound.play(); // Παίζουμε τον ήχο της νίκης
             }
         });
     </script>
