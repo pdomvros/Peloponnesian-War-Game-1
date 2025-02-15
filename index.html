@@ -1,1 +1,192 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Η Μάχη των Στρατηγών</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+        }
+        h1 {
+            color: #8B0000;
+        }
+        #map {
+            width: 100%;
+            height: 600px;
+            background: url('peloponnesian.jpg') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            margin: 20px auto;
+            border: 5px solid #8B0000;
+            border-radius: 10px;
+        }
+        .location {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .label {
+            position: absolute;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+        #question-box {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 2px solid #8B0000;
+            border-radius: 10px;
+            display: inline-block;
+            width: 80%;
+        }
+        #choices {
+            margin-top: 10px;
+        }
+        button {
+            display: block;
+            margin: 5px auto;
+            padding: 10px 20px;
+            background-color: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #6B0000;
+        }
+        #score {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Η Μάχη των Στρατηγών</h1>
+    <div id="map">
+        <!-- Αθήνα -->
+        <div class="location" data-location="Athens" style="top: 40%; left: 55%;"></div>
+        <div class="label" style="top: 42%; left: 57%;">Αθήνα<br>(Περικλής)</div>
 
+        <!-- Σπάρτη -->
+        <div class="location" data-location="Sparta" style="top: 75%; left: 50%;"></div>
+        <div class="label" style="top: 77%; left: 52%;">Σπάρτη<br>(Λύσανδρος)</div>
+
+        <!-- Κόρινθος -->
+        <div class="location" data-location="Corinth" style="top: 60%; left: 48%;"></div>
+        <div class="label" style="top: 62%; left: 50%;">Κόρινθος<br>(Ξενοφών)</div>
+
+        <!-- Σικελία -->
+        <div class="location" data-location="Sicily" style="top: 35%; left: 10%;"></div>
+        <div class="label" style="top: 37%; left: 12%;">Σικελία<br>(Αλκιβιάδης)</div>
+    </div>
+    <div id="question-box"></div>
+    <div id="choices"></div>
+    <div id="score">Σκορ: 0</div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const questionBox = document.getElementById("question-box");
+            const choices = document.getElementById("choices");
+            const scoreElement = document.getElementById("score");
+            let score = 0;
+
+            const locations = {
+                "Athens": {
+                    name: "Περικλής",
+                    riddles: [
+                        { question: "Ποιο ήταν το βασικό πλεονέκτημα της Αθήνας στον Πελοποννησιακό Πόλεμο;", options: ["Ναυτικό", "Πεζικό", "Οχυρώσεις"], answer: "Ναυτικό" },
+                        { question: "Ποιος ήταν ο αρχηγός των Αθηναίων στην αρχή του πολέμου;", options: ["Περικλής", "Αλκιβιάδης", "Νικίας"], answer: "Περικλής" },
+                        { question: "Ποια ήταν η στρατηγική της Αθήνας για να νικήσει τη Σπάρτη;", options: ["Ναυτικός αποκλεισμός", "Γήινη επίθεση", "Συμμαχία με την Περσία"], answer: "Ναυτικός αποκλεισμός" },
+                        { question: "Ποια ήταν η κύρια αδυναμία της Αθήνας στον πόλεμο;", options: ["Οικονομία", "Πεζικό", "Ασθένειες"], answer: "Ασθένειες" },
+                        { question: "Ποιος ήταν ο διάσημος ιστορικός που κατέγραψε τον πόλεμο;", options: ["Ηρόδοτος", "Θουκυδίδης", "Ξενοφών"], answer: "Θουκυδίδης" }
+                    ]
+                },
+                "Sparta": {
+                    name: "Λύσανδρος",
+                    riddles: [
+                        { question: "Ποια ήταν η κύρια στρατιωτική δύναμη της Σπάρτης;", options: ["Πεζικό", "Ναυτικό", "Οικονομία"], answer: "Πεζικό" },
+                        { question: "Ποιος ήταν ο διάσημος στρατηγός της Σπάρτης;", options: ["Λεωνίδας", "Λύσανδρος", "Παυσανίας"], answer: "Λύσανδρος" },
+                        { question: "Ποια ήταν η στρατηγική της Σπάρτης για να νικήσει την Αθήνα;", options: ["Γήινη επίθεση", "Ναυτικός αποκλεισμός", "Συμμαχία με την Περσία"], answer: "Γήινη επίθεση" },
+                        { question: "Ποια ήταν η κύρια αδυναμία της Σπάρτης στον πόλεμο;", options: ["Οικονομία", "Ναυτικό", "Ασθένειες"], answer: "Ναυτικό" },
+                        { question: "Ποιος ήταν ο βασιλιάς της Σπάρτης κατά τη διάρκεια του πολέμου;", options: ["Αρχίδαμος", "Αγησίλαος", "Κλεομένης"], answer: "Αρχίδαμος" }
+                    ]
+                },
+                "Corinth": {
+                    name: "Ξενοφών",
+                    riddles: [
+                        { question: "Τι ενόχλησε την Κόρινθο σχετικά με την Αθήνα;", options: ["Η επέκταση στο Ιόνιο", "Η ισχυρή οικονομία", "Η πολιτική της Σπάρτης"], answer: "Η επέκταση στο Ιόνιο" },
+                        { question: "Ποιος ήταν ο διάσημος στρατηγός της Κορίνθου;", options: ["Ξενοφών", "Τιμολέων", "Περίανδρος"], answer: "Ξενοφών" },
+                        { question: "Ποια ήταν η κύρια συμβολή της Κορίνθου στον πόλεμο;", options: ["Ναυτικό", "Πεζικό", "Οικονομική υποστήριξη"], answer: "Ναυτικό" },
+                        { question: "Ποια ήταν η κύρια αδυναμία της Κορίνθου στον πόλεμο;", options: ["Οικονομία", "Πεζικό", "Ασθένειες"], answer: "Οικονομία" },
+                        { question: "Ποιος ήταν ο κύριος σύμμαχος της Κορίνθου;", options: ["Σπάρτη", "Αθήνα", "Θήβα"], answer: "Σπάρτη" }
+                    ]
+                },
+                "Sicily": {
+                    name: "Αλκιβιάδης",
+                    riddles: [
+                        { question: "Τι συνέβη στη Σικελική εκστρατεία (415-413 π.Χ.);", options: ["Νίκη της Αθήνας", "Ήττα της Αθήνας", "Συμμαχία με τη Σπάρτη"], answer: "Ήττα της Αθήνας" },
+                        { question: "Ποιος ήταν ο αρχηγός της Αθήνας στη Σικελική εκστρατεία;", options: ["Αλκιβιάδης", "Νικίας", "Δημοσθένης"], answer: "Αλκιβιάδης" },
+                        { question: "Ποια ήταν η κύρια αιτία της ήττας της Αθήνας στη Σικελία;", options: ["Αποτυχία στρατηγικής", "Ασθένειες", "Συμμαχία Σπάρτης-Σικελίας"], answer: "Αποτυχία στρατηγικής" },
+                        { question: "Ποια ήταν η κύρια αδυναμία της Αθήνας στη Σικελία;", options: ["Ναυτικό", "Πεζικό", "Οικονομία"], answer: "Πεζικό" },
+                        { question: "Ποιος ήταν ο κύριος αντίπαλος της Αθήνας στη Σικελία;", options: ["Συρακούσες", "Κόρινθος", "Σπάρτη"], answer: "Συρακούσες" }
+                    ]
+                }
+            };
+
+            document.querySelectorAll(".location").forEach(location => {
+                location.addEventListener("click", function() {
+                    let locationKey = this.getAttribute("data-location");
+                    if (locations[locationKey]) {
+                        showRiddles(locationKey);
+                    }
+                });
+            });
+
+            function showRiddles(location) {
+                const data = locations[location];
+                let currentRiddleIndex = 0;
+
+                function displayNextRiddle() {
+                    if (currentRiddleIndex < data.riddles.length) {
+                        const riddle = data.riddles[currentRiddleIndex];
+                        questionBox.innerHTML = `<p>${riddle.question}</p>`;
+                        choices.innerHTML = "";
+                        riddle.options.forEach(option => {
+                            const button = document.createElement("button");
+                            button.textContent = option;
+                            button.onclick = () => checkAnswer(option, riddle.answer, location, currentRiddleIndex);
+                            choices.appendChild(button);
+                        });
+                        currentRiddleIndex++;
+                    } else {
+                        alert(`Τέλος των γρίφων για την ${location}. Σκορ σας: ${score}`);
+                        scoreElement.textContent = `Σκορ: ${score}`;
+                    }
+                }
+
+                displayNextRiddle();
+            }
+
+            function checkAnswer(selected, correct, location, riddleIndex) {
+                if (selected === correct) {
+                    alert("Σωστό!");
+                    score++;
+                } else {
+                    alert("Λάθος!");
+                }
+                showRiddles(location); // Εμφάνιση του επόμενου γρίφου
+            }
+        });
+    </script>
+</body>
+</html>
